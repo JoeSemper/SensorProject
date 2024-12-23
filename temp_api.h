@@ -19,10 +19,10 @@ void print_all_records(int size, struct sensor *data);
 void sort_by_temperature(int size, struct sensor *data);
 void sort_by_date(int size, struct sensor *data);
 
-int month_avg_temp(int size, struct sensor *data, int month);
+float month_avg_temp(int size, struct sensor *data, int month);
 int month_min_temp(int size, struct sensor *data, int month);
 int month_max_temp(int size, struct sensor *data, int month);
 
-int year_avg_temp(int size, struct sensor *data);
+float year_avg_temp(int size, struct sensor *data);
 int year_min_temp(int size, struct sensor *data);
 int year_max_temp(int size, struct sensor *data);

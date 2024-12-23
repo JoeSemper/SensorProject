@@ -40,7 +40,7 @@ long date_to_minutes(const struct sensor *data)
 
 int compare_temperature(const void *data_1, const void *data_2)
 {
-    return ((struct sensor*)data_1)->temperature - ((struct sensor*)data_2)->temperature;
+    return ((struct sensor *)data_1)->temperature - ((struct sensor *)data_2)->temperature;
 }
 
 int compare_date(const void *data_1, const void *data_2)
@@ -58,14 +58,88 @@ void sort_by_date(int size, struct sensor *data)
     qsort(data, size, sizeof(struct sensor), compare_date);
 }
 
-int month_avg_temp(int size, struct sensor *data, int month) {}
+float month_avg_temp(int size, struct sensor *data, int month)
+{
+    int sum = 0;
+    int counter = 0;
 
-int month_min_temp(int size, struct sensor *data, int month) {}
+    for (int i = 0; i < size; i++)
+    {
+        if (data[i].month == month)
+        {
+            sum += data[i].temperature;
+            counter++;
+        }
+    }
 
-int month_max_temp(int size, struct sensor *data, int month) {}
+    return (float)sum / counter;
+}
 
-int year_avg_temp(int size, struct sensor *data) {}
+int month_min_temp(int size, struct sensor *data, int month)
+{
+    int min = data[0].temperature;
 
-int year_min_temp(int size, struct sensor *data) {}
+    for (int i = 1; i < size; i++)
+    {
+        if (data[i].month == month)
+        {
+            min = data[i].temperature < min ? data[i].temperature : min;
+        }
+    }
 
-int year_max_temp(int size, struct sensor *data) {}
+    return min;
+}
+
+int month_max_temp(int size, struct sensor *data, int month)
+{
+    int max = data[0].temperature;
+
+    for (int i = 1; i < size; i++)
+    {
+        if (data[i].month == month)
+        {
+            max = data[i].temperature > max ? data[i].temperature : max;
+        }
+    }
+
+    return max;
+}
+
+float year_avg_temp(int size, struct sensor *data)
+{
+    int sum = 0;
+    int counter = 0;
+
+    for (int i = 0; i < size; i++)
+    {
+        sum += data[i].temperature;
+        counter++;
+    }
+
+    return (float)sum / counter;
+}
+
+int year_min_temp(int size, struct sensor *data)
+{
+    int min = data[0].temperature;
+
+    for (int i = 1; i < size; i++)
+    {
+
+        min = data[i].temperature < min ? data[i].temperature : min;
+    }
+
+    return min;
+}
+
+int year_max_temp(int size, struct sensor *data)
+{
+    int max = data[0].temperature;
+
+    for (int i = 1; i < size; i++)
+    {
+        max = data[i].temperature > max ? data[i].temperature : max;
+    }
+
+    return max;
+}
