@@ -143,3 +143,8 @@ int year_max_temp(int size, struct sensor *data)
 
     return max;
 }
+
+void read_data_from_file(FILE *file, int size, struct sensor *data){}
+
+void print_year_statistics(int size, struct sensor *data){}
+void print_month_statistics(int size, struct sensor *data, int month){}
