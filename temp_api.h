@@ -7,7 +7,7 @@ struct sensor
     uint16_t year;
     uint8_t hours;
     uint8_t minutes;
-    uint8_t temperature;
+    int8_t temperature;
 };
 
 void read_data_from_file(FILE *file, int size, struct sensor *data);

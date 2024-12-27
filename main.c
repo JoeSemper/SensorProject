@@ -16,6 +16,8 @@ int main(int argc, char **argv)
         int size = count_lines(params.file);
         struct sensor data[size];
 
+        printf("Data size = %d\n", size);
+
         read_data_from_file(params.file, size, data);
 
         if (params.month == MONTH_NOT_SET)

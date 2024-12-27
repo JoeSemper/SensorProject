@@ -23,7 +23,7 @@ void print_all_records(int size, struct sensor *data)
     for (int i = 0; i < size; i++)
     {
         printf(
-            "%02d.%02d.%04d %02d:%02d t=%02d\n",
+            "%02d.%02d.%04d %02d:%02d t=%d\n",
             data[i].day,
             data[i].month,
             data[i].year,
@@ -144,7 +144,25 @@ int year_max_temp(int size, struct sensor *data)
     return max;
 }
 
-void read_data_from_file(FILE *file, int size, struct sensor *data){}
+void read_data_from_file(FILE *file, int size, struct sensor *data)
+{
+    if (file == NULL)
+        printf("File not opened");
 
-void print_year_statistics(int size, struct sensor *data){}
-void print_month_statistics(int size, struct sensor *data, int month){}
+    fseek(file, 0, SEEK_SET);
+
+    int i = 0;
+
+    while (!feof(file))
+    {
+        int year, month, day, hours, minutes, temperature;
+
+        fscanf(file, "%d;%d;%d;%d;%d;%d\n", &year, &month, &day, &hours, &minutes, &temperature);
+        add_record(data, i, day, month, year, hours, minutes, temperature);
+
+        i++;
+    }
+}
+
+void print_year_statistics(int size, struct sensor *data) {}
+void print_month_statistics(int size, struct sensor *data, int month) {}
