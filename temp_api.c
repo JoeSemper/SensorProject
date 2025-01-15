@@ -4,6 +4,8 @@
 #include <search.h>
 #include "temp_api.h"
 
+#define EXPECTED_PARAMS 6
+
 void add_record(struct sensor *data, int position, uint8_t day,
                 uint8_t month, uint16_t year, uint8_t hours,
                 uint8_t minutes, int8_t temperature)
@@ -144,24 +146,38 @@ int year_max_temp(int size, struct sensor *data)
     return max;
 }
 
-void read_data_from_file(FILE *file, int size, struct sensor *data)
+int read_data_from_file(FILE *file, struct sensor *data)
 {
     if (file == NULL)
+    {
         printf("File not opened");
+        return 0;
+    }
 
     fseek(file, 0, SEEK_SET);
 
-    int i = 0;
+    int position = 0;
+    int read_params;
+    char tmp[20];
 
     while (!feof(file))
     {
         int year, month, day, hours, minutes, temperature;
 
-        fscanf(file, "%d;%d;%d;%d;%d;%d\n", &year, &month, &day, &hours, &minutes, &temperature);
-        add_record(data, i, day, month, year, hours, minutes, temperature);
+        read_params = fscanf(file, "%d;%d;%d;%d;%d;%d\n", &year, &month, &day, &hours, &minutes, &temperature);
 
-        i++;
+        if (read_params < EXPECTED_PARAMS)
+        {
+            fscanf(file, "%[^\n]", tmp);
+            continue;
+        }
+
+        add_record(data, position, day, month, year, hours, minutes, temperature);
+
+        position++;
     }
+
+    return position;
 }
 
 void print_year_statistics(int size, struct sensor *data) {}

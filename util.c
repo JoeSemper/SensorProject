@@ -69,5 +69,5 @@ int count_lines(FILE *file)
         }
     }
 
-    return counter;
+    return counter + 1;
 }

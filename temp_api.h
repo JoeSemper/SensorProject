@@ -2,15 +2,15 @@
 
 struct sensor
 {
+    uint16_t year;
     uint8_t day;
     uint8_t month;
-    uint16_t year;
     uint8_t hours;
     uint8_t minutes;
     int8_t temperature;
 };
 
-void read_data_from_file(FILE *file, int size, struct sensor *data);
+int read_data_from_file(FILE *file, struct sensor *data);
 
 void print_year_statistics(int size, struct sensor *data);
 void print_month_statistics(int size, struct sensor *data, int month);

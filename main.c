@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include "temp_api.h"
 #include "util.h"
 
@@ -13,12 +15,18 @@ int main(int argc, char **argv)
 
     if (params.file != NULL)
     {
-        int size = count_lines(params.file);
-        struct sensor data[size];
+        int lines = count_lines(params.file);
+        int size;
 
-        printf("Data size = %d\n", size);
+        struct sensor* data = malloc(lines*sizeof(struct sensor));
 
-        read_data_from_file(params.file, size, data);
+        printf("Lines = %d\n", lines);
+
+        size = read_data_from_file(params.file, data);
+
+        printf("Read lines = %d\n", size);
+
+        print_all_records(size, data);
 
         if (params.month == MONTH_NOT_SET)
         {
@@ -28,6 +36,8 @@ int main(int argc, char **argv)
         {
             print_month_statistics(size, data, params.month);
         }
+
+        free(data);
     }
 
     return 0;
