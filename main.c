@@ -15,26 +15,27 @@ int main(int argc, char **argv)
 
     if (params.file != NULL)
     {
-        int lines = count_lines(params.file);
-        int size;
+        int lines_total = count_lines(params.file);
+        int lines_read;
 
-        struct sensor* data = malloc(lines*sizeof(struct sensor));
+        struct sensor *data = malloc(lines_total * sizeof(struct sensor));
+        int error_lines[MAX_ERROR_LINES];
 
-        printf("Lines = %d\n", lines);
+        printf("Total lines %d\n", lines_total);
 
-        size = read_data_from_file(params.file, data);
+        lines_read = read_data_from_file(params.file, data, error_lines);
 
-        printf("Read lines = %d\n", size);
+        printf("Read lines %d\n", lines_read);
 
-        print_all_records(size, data);
+        print_error_lines(lines_total - lines_read, error_lines);
 
         if (params.month == MONTH_NOT_SET)
         {
-            print_year_statistics(size, data);
+            print_year_statistics(lines_read, data);
         }
         else
         {
-            print_month_statistics(size, data, params.month);
+            print_month_statistics(lines_read, data, params.month);
         }
 
         free(data);

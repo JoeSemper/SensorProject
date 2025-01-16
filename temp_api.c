@@ -6,6 +6,11 @@
 
 #define EXPECTED_PARAMS 6
 
+void print_header(void)
+{
+    printf("Year   Month   Min_t   Max_t   Avg_t\n");
+}
+
 void add_record(struct sensor *data, int position, uint8_t day,
                 uint8_t month, uint16_t year, uint8_t hours,
                 uint8_t minutes, int8_t temperature)
@@ -79,9 +84,18 @@ float month_avg_temp(int size, struct sensor *data, int month)
 
 int month_min_temp(int size, struct sensor *data, int month)
 {
-    int min = data[0].temperature;
+    int i = 0;
 
-    for (int i = 1; i < size; i++)
+    while (data[i].month != month)
+    {
+        i++;
+    }
+
+    int min = data[i].temperature;
+
+    i++;
+
+    for (i; i < size; i++)
     {
         if (data[i].month == month)
         {
@@ -94,7 +108,16 @@ int month_min_temp(int size, struct sensor *data, int month)
 
 int month_max_temp(int size, struct sensor *data, int month)
 {
+    int i = 0;
+
+    while (data[i].month != month)
+    {
+        i++;
+    }
+
     int max = data[0].temperature;
+
+    i++;
 
     for (int i = 1; i < size; i++)
     {
@@ -146,39 +169,59 @@ int year_max_temp(int size, struct sensor *data)
     return max;
 }
 
-int read_data_from_file(FILE *file, struct sensor *data)
+int read_data_from_file(FILE *file, struct sensor *data, int *error_lines)
 {
     if (file == NULL)
     {
-        printf("File not opened");
+        printf("No such file");
         return 0;
     }
 
     fseek(file, 0, SEEK_SET);
 
-    int position = 0;
+    int read_lines = 0;
+    int current_line = 0;
+    int i = 0;
     int read_params;
     char tmp[20];
 
+    int year, month, day, hours, minutes, temperature;
+
     while (!feof(file))
     {
-        int year, month, day, hours, minutes, temperature;
-
         read_params = fscanf(file, "%d;%d;%d;%d;%d;%d\n", &year, &month, &day, &hours, &minutes, &temperature);
 
         if (read_params < EXPECTED_PARAMS)
         {
             fscanf(file, "%[^\n]", tmp);
-            continue;
+            error_lines[i] = current_line;
+            i++;
+        }
+        else
+        {
+            add_record(data, read_lines, day, month, year, hours, minutes, temperature);
+            read_lines++;
         }
 
-        add_record(data, position, day, month, year, hours, minutes, temperature);
-
-        position++;
+        current_line++;
     }
 
-    return position;
+    return read_lines;
 }
 
-void print_year_statistics(int size, struct sensor *data) {}
-void print_month_statistics(int size, struct sensor *data, int month) {}
+void print_year_statistics(int size, struct sensor *data)
+{
+}
+
+void print_month_statistics(int size, struct sensor *data, int month)
+{
+    int min, max, avg;
+
+    print_header();
+
+    min = month_min_temp(size, data, month);
+    max = month_max_temp(size, data, month);
+    avg = month_avg_temp(size, data, month);
+
+    printf("%d    %02d      %d     %d     %d\n", data[0].year, month, min, max, avg);
+}

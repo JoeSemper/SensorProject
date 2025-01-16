@@ -10,7 +10,7 @@ struct sensor
     int8_t temperature;
 };
 
-int read_data_from_file(FILE *file, struct sensor *data);
+int read_data_from_file(FILE *file, struct sensor *data, int *error_lines);
 
 void print_year_statistics(int size, struct sensor *data);
 void print_month_statistics(int size, struct sensor *data, int month);
