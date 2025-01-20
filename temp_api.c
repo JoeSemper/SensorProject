@@ -67,8 +67,8 @@ void sort_by_date(int size, struct sensor *data)
 
 float month_avg_temp(int size, struct sensor *data, int month)
 {
-    int sum = 0;
-    int counter = 0;
+    float sum = 0;
+    float counter = 0;
 
     for (int i = 0; i < size; i++)
     {
@@ -79,7 +79,7 @@ float month_avg_temp(int size, struct sensor *data, int month)
         }
     }
 
-    return (float)sum / counter;
+    return sum / counter;
 }
 
 int month_min_temp(int size, struct sensor *data, int month)
@@ -115,7 +115,7 @@ int month_max_temp(int size, struct sensor *data, int month)
         i++;
     }
 
-    int max = data[0].temperature;
+    int max = data[i].temperature;
 
     i++;
 
@@ -183,7 +183,7 @@ int read_data_from_file(FILE *file, struct sensor *data, int *error_lines)
     int current_line = 0;
     int i = 0;
     int read_params;
-    char tmp[20];
+    char tmp[50];
 
     int year, month, day, hours, minutes, temperature;
 
@@ -191,7 +191,7 @@ int read_data_from_file(FILE *file, struct sensor *data, int *error_lines)
     {
         read_params = fscanf(file, "%d;%d;%d;%d;%d;%d\n", &year, &month, &day, &hours, &minutes, &temperature);
 
-        if (read_params < EXPECTED_PARAMS)
+        if (read_params != EXPECTED_PARAMS)
         {
             fscanf(file, "%[^\n]", tmp);
             error_lines[i] = current_line;
@@ -209,19 +209,63 @@ int read_data_from_file(FILE *file, struct sensor *data, int *error_lines)
     return read_lines;
 }
 
-void print_year_statistics(int size, struct sensor *data)
+int has_month(int size, struct sensor *data, int month)
 {
+    for (int i = 0; i < size; i++)
+    {
+        if (data[i].month == month)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void print_month_values(int size, struct sensor *data, int month)
+{
+    if (has_month(size, data, month))
+    {
+        int min, max;
+        float avg;
+
+        min = month_min_temp(size, data, month);
+        max = month_max_temp(size, data, month);
+        avg = month_avg_temp(size, data, month);
+
+        printf("%d    %2d      %3d     %3d    %3.1f\n", data[0].year, month, min, max, avg);
+    }
 }
 
 void print_month_statistics(int size, struct sensor *data, int month)
 {
-    int min, max, avg;
-
     print_header();
+    print_month_values(size, data, month);
+}
 
-    min = month_min_temp(size, data, month);
-    max = month_max_temp(size, data, month);
-    avg = month_avg_temp(size, data, month);
+void print_year_monthly_values(int size, struct sensor *data)
+{
+    for (int i = 1; i <= 12; i++)
+    {
+        print_month_values(size, data, i);
+    }
+}
 
-    printf("%d    %02d      %d     %d     %d\n", data[0].year, month, min, max, avg);
+void print_year_values(int size, struct sensor *data)
+{
+    int min, max;
+    float avg;
+
+    min = year_min_temp(size, data);
+    max = year_max_temp(size, data);
+    avg = year_avg_temp(size, data);
+
+    printf("Year statistics: min t = %d, max t = %d, avg t = %.2f", min, max, avg);
+}
+
+void print_year_statistics(int size, struct sensor *data)
+{
+    print_header();
+    print_year_monthly_values(size, data);
+    print_year_values(size, data);
 }

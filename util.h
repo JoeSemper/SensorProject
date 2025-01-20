@@ -4,7 +4,7 @@
 #define BUF_SIZE 65536
 #define ARG_STRING "hf:m:"
 #define MONTH_NOT_SET -1
-#define HELP_TEXT "Arguments:\n-h - Help\n-f <file_name> - Data file name\n-m <month> - Month\n"
+#define HELP_TEXT "Temperature statistics utile\nOptions:\n-h - Help\n-f <file_name> - Data file name\n-m <month> - Month\n"
 #define MAX_ERROR_LINES 100
 
 enum PARAMS_LIST

@@ -85,13 +85,23 @@ int count_lines(FILE *file)
 
 void print_error_lines(int size, int *error_lines)
 {
+    if (size == 0)
+    {
+        return;
+    }
+
     int max = size <= MAX_ERROR_LINES ? size : MAX_ERROR_LINES;
 
     printf("Error lines: ");
 
     for (int i = 0; i < max; i++)
     {
-        printf("%d, ", error_lines[i]);
+        if (i > 0)
+        {
+            printf(", ");
+        }
+
+        printf("%d", error_lines[i]);
     }
 
     printf("\n");
