@@ -11,7 +11,7 @@ int read_month(char *optarg)
         month *= 10 + optarg[1] - '0';
     }
 
-    return (month > 1 && month < 13) ? month : MONTH_NOT_SET;
+    return (month >= 1 && month <= 12) ? month : MONTH_NOT_SET;
 }
 
 void read_arguments(int argc, char **argv, struct parameters *params)
